@@ -1,25 +1,22 @@
 
-import { useEffect, useContext } from "react"
+// import { useContext } from "react"
 import Spinner from "../layout/Spinner";
 import UserItem from "./UserItem";
-import GitHubContext from "../../context/github/GitHubContext";
-
-
+// import GitHubContext from "../../context/github/GitHubContext";
+// import { useGitHubContext } from "../../context/github/GitHubContext";
+import { useGitHubContext } from "../../context/github/UseGithubContext";
 
 
 const UserResult:React.FC = () => {
-    const context = useContext(GitHubContext)
+    const context = useGitHubContext();
     
     
   if (!context) {
     throw new Error("UserResult must be used within a GitHubProvider");
   }
 
-  const { users, loading, error, fetchUsers } = context;
+  const { users, loading, error } = context;
 
-useEffect( () => {
-    fetchUsers();
-}, [fetchUsers]) 
 
 
     if (error) return <p>Error: {error}</p>;
