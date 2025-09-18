@@ -25,6 +25,10 @@ export const githubReducer = (state: State, action: Action) => {
       return { ...state, loading: true};
     case "SUCCESS":
       return { ...state, users: action.payload, loading: false };
+    case "GET_USER":
+      return { ...state, user: action.payload, loading: false };
+    case "GET_REPOS":
+      return {...state, repos: action.payload, loading: false};
     case "ERROR":
       return { ...state, error: action.payload, loading: false };
     case "CLEAR":
@@ -38,3 +42,4 @@ export const githubReducer = (state: State, action: Action) => {
 
 
 
+ 

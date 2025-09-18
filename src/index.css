@@ -2,3 +2,8 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, aqua;
 }
+
+.custom-image-full .custom-card-image:before {
+  border-radius: 1rem;
+  opacity: 0.45;
+}

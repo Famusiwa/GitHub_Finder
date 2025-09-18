@@ -1,13 +1,13 @@
 import { useState} from "react"
-// import GitHubContext from "../../context/github/GitHubContext";
-
 import { useGitHubContext } from "../../context/github/UseGithubContext";
+import { useAlertContext } from "../../context/alert/UseAlertContext";
 
 
 const UserSearch:React.FC = () => {
     
     const [text, setText] = useState<string>("");
     const {users, searchUsers, clearUser} = useGitHubContext();
+    const {setAlert} = useAlertContext()
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => setText(e.target.value);
 
@@ -15,7 +15,7 @@ const UserSearch:React.FC = () => {
         e.preventDefault();
 
         if(text === ''){
-          alert("Please enter something in the search area");
+          setAlert("Please type in the search area", "error");
         }
         else{
           searchUsers(text);
