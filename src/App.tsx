@@ -6,9 +6,11 @@ import Footer from "./components/layout/Footer";
 import Alert from "./components/layout/Alert";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import User from "./pages/User";
 import NotFound from "./pages/NotFound";
 import {GitHubProvider} from "./context/github/GitHubContext";
 import { AlertProvider } from "./context/alert/AlertContext";
+
 
 const App: React.FC = () => {
   return (
@@ -23,6 +25,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element= {<Home />}/>
               <Route path="/about" element= {<About />}/>
+              <Route path="/user/:login" element= {<User />}/>
               <Route path="/*" element= {<NotFound />}/>
             </Routes>
          </main>
