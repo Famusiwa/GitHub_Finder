@@ -1,34 +1,35 @@
 import { createContext, useReducer } from "react";
 import { alertReducer } from "./AlertReducer";
-import type { State } from "./type";
+import type { State } from "./types";
 
-type AlertContextType =  {
-    setAlert: (msg:string, type:string) => Promise<void>
-    alert: State
-}
+type AlertContextType = {
+  setAlert: (msg: string, type: string) => Promise<void>;
+  alert: State;
+};
 
+const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
-const AlertContext = createContext<AlertContextType | undefined>(undefined)
+export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const initialState = null;
 
-export const AlertProvider:React.FC<{children: React.ReactNode}> = ({children}) => {
-    const initialState = null
+  const [state, dispatch] = useReducer(alertReducer, initialState);
 
-    const [state, dispatch] = useReducer(alertReducer, initialState)
+  //Set Alert
+  const setAlert = async (msg: string, type: string) => {
+    dispatch({
+      type: "SET_ALERT",
+      payload: { msg, type },
+    });
+    setTimeout(() => dispatch({ type: "REMOVE_ALERT" }), 3000);
+  };
 
-    //Set Alert
-    const setAlert = async (msg:string, type:string) =>{
-        dispatch({
-            type: "SET_ALERT",
-            payload: {msg, type}
-        })
-        setTimeout(() => dispatch({type: "REMOVE_ALERT"}), 3000);
-    }
+  return (
+    <AlertContext.Provider value={{ alert: state, setAlert }}>
+      {children}
+    </AlertContext.Provider>
+  );
+};
 
-    return(
-        <AlertContext.Provider value={{alert: state, setAlert}}>
-            {children}
-        </AlertContext.Provider>
-    )
-} 
-
-export default AlertContext
+export default AlertContext;

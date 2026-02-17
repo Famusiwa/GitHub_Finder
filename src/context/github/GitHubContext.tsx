@@ -1,10 +1,8 @@
-
-// //Use Context with UseState 
+// //Use Context with UseState
 
 // import { createContext, useState, useCallback } from "react";
 // import axios, { AxiosError } from "axios";
 // import type {State, User} from "./type"
-
 
 // // Define context shape
 // type GitHubContextType = State & {
@@ -21,9 +19,7 @@
 
 // const API_URL = import.meta.env.VITE_API_URL;
 
-
-
-// //Using Arrow function, importing reactnode into arrow function 
+// //Using Arrow function, importing reactnode into arrow function
 
 // export const GitHubProvider:React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
@@ -42,7 +38,7 @@
 //     } finally {
 //       setLoading(false);
 //     }
-//   }, []); 
+//   }, []);
 
 //   return (
 //     <GitHubContext.Provider value={{ users, loading, error, fetchUsers }}>
@@ -51,14 +47,7 @@
 //   );
 // }
 
-
 // export default GitHubContext;
-
-
-
-
-
-
 
 //UseContext with UseReducer
 
@@ -67,16 +56,13 @@ import type { ReactNode } from "react";
 import axios, { AxiosError } from "axios";
 // import { initialState, githubReducer } from "./GitHubReducer";
 import { githubReducer } from "./GitHubReducer";
-import type {State} from "./type"
-
-
+import type { State } from "./types";
 
 // Define context shape
 type GitHubContextType = State & {
-  searchUsers: (text:string) => Promise<void>;
-  clearUser: () => void
-  get_User_Repos: (login:string) => Promise<void>
-  
+  searchUsers: (text: string) => Promise<void>;
+  clearUser: () => void;
+  get_User_Repos: (login: string) => Promise<void>;
 };
 
 // Create context with initial undefined (to be provided later)
@@ -91,24 +77,24 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const github = axios.create({
   baseURL: API_URL,
-})
+});
 
 export function GitHubProvider({ children }: UserProviderProps) {
   const initialState = {
-  users: [],
-  user: null,
-  repos: [],
-  loading: false,
-  error: null,
-};
+    users: [],
+    user: null,
+    repos: [],
+    loading: false,
+    error: null,
+  };
   const [state, dispatch] = useReducer(githubReducer, initialState);
 
   //Filter Users
-  const searchUsers = useCallback(async (text:string) => {
-    setLoading()
+  const searchUsers = useCallback(async (text: string) => {
+    setLoading();
     const param = new URLSearchParams({
-      q: text
-    })
+      q: text,
+    });
     try {
       const response = await github.get(`/search/users?${param}`);
 
@@ -119,33 +105,30 @@ export function GitHubProvider({ children }: UserProviderProps) {
     }
   }, []);
 
-
-  const get_User_Repos = useCallback(async (login:string) => {
-      setLoading()
-      const params = new URLSearchParams({
-      sort:"created",
-      per_page: "10", 
-    })
-    try{
-       const [user, repos] = await Promise.all([
+  const get_User_Repos = useCallback(async (login: string) => {
+    setLoading();
+    const params = new URLSearchParams({
+      sort: "created",
+      per_page: "10",
+    });
+    try {
+      const [user, repos] = await Promise.all([
         github.get(`/users/${login}`),
-        github.get(`${API_URL}/users/${login}/repos?${params}`)
-      ])
+        github.get(`${API_URL}/users/${login}/repos?${params}`),
+      ]);
       dispatch({ type: "GET_USER", payload: user.data });
       dispatch({ type: "GET_REPOS", payload: repos.data });
-    }catch (err: unknown) {
+    } catch (err: unknown) {
       const error = err as AxiosError;
       dispatch({ type: "ERROR", payload: error.message });
     }
   }, []);
 
-
-
   //  const getRepo = useCallback(async (login:string) => {
   //   setLoading();
   //   const params = new URLSearchParams({
   //     sort:"created",
-  //     per_page: "10", 
+  //     per_page: "10",
   //   })
   //   try {
   //     const response = await axios.get(`${API_URL}/users/${login}/repos?${params}`);
@@ -157,22 +140,20 @@ export function GitHubProvider({ children }: UserProviderProps) {
   //   }
   // }, []);
 
-
   //Clear Users
-  
-  
-  const clearUser = () => dispatch({type: "CLEAR"})
 
-  //Create a function for loading to be resuable 
+  const clearUser = () => dispatch({ type: "CLEAR" });
+
+  //Create a function for loading to be resuable
   const setLoading = () => dispatch({ type: "START" });
-  
 
   return (
-    <GitHubContext.Provider value={{ ...state, searchUsers, clearUser, get_User_Repos }}>
+    <GitHubContext.Provider
+      value={{ ...state, searchUsers, clearUser, get_User_Repos }}
+    >
       {children}
     </GitHubContext.Provider>
   );
 }
 
-export default GitHubContext
-
+export default GitHubContext;
