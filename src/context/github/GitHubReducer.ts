@@ -1,4 +1,4 @@
-import type {State, Action} from "./type"
+import type {State, Action} from "./types"
 
 // export const initialState: State = {
 //   users: [],

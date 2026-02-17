@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useGitHubContext } from "../../context/github/UseGithubContext";
-import { useAlertContext } from "../../context/alert/UseAlertContext";
+import { useGitHubContext } from "../../hooks/UseGithubContext";
+import { useAlertContext } from "../../hooks/UseAlertContext";
 
 const UserSearch: React.FC = () => {
   const [text, setText] = useState<string>("");
