@@ -2,17 +2,20 @@ import { createContext, useReducer } from "react";
 import { alertReducer } from "./AlertReducer";
 import type { State } from "./types";
 
-type AlertContextType = {
+interface AlertContextType {
   setAlert: (msg: string, type: string) => Promise<void>;
   alert: State;
-};
+}
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
 export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const initialState = null;
+  const initialState = {
+    msg: "",
+    type: "",
+  };
 
   const [state, dispatch] = useReducer(alertReducer, initialState);
 

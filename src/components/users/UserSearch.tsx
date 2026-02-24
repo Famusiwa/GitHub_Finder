@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useGitHubContext } from "../../hooks/UseGithubContext";
 import { useAlertContext } from "../../hooks/UseAlertContext";
+import Button from "../layout/Button";
 
 const UserSearch: React.FC = () => {
   const [text, setText] = useState<string>("");
@@ -43,20 +44,22 @@ const UserSearch: React.FC = () => {
                 onChange={handleChange}
                 value={text}
                 placeholder="Type here to search"
-                className="flex-1 bg-gray-300 input input-md text-blue-500 rounded-r-none"
+                className="flex-1 bg-gray-300 input input-md text-blue-500 rounded-r-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-              <button className="rounded-l-none w-25 btn btn-md">Search</button>
+              <Button className=" rounded-l-none w-25 btn btn-md ">
+                Search
+              </Button>
             </div>
           </div>
         </form>
       </div>
       {users.length > 0 && (
-        <div
+        <Button
           onClick={clearUser}
           className="btn btn-error rounded-xl w-20  btn-md"
         >
           Clear
-        </div>
+        </Button>
       )}
     </div>
   );

@@ -1,10 +1,10 @@
 
 
 // Define context shape
-export type State = {
+export interface State {
    msg: string;
    type: string;
-}| null;
+}
 
 export type Action =
   | { type: "SET_ALERT", payload:{msg:string, type:string} }

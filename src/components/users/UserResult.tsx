@@ -1,18 +1,9 @@
-// import { useContext } from "react"
 import Spinner from "../layout/Spinner";
 import UserItem from "./UserItem";
-// import GitHubContext from "../../context/github/GitHubContext";
-// import { useGitHubContext } from "../../context/github/GitHubContext";
 import { useGitHubContext } from "../../hooks/UseGithubContext";
 
 const UserResult: React.FC = () => {
   const { users, loading, error } = useGitHubContext();
-
-  // if (!context) {
-  //   throw new Error("UserResult must be used within a GitHubProvider");
-  // }
-
-  // const { users, loading, error } = context;
 
   if (error) return <p>Error: {error}</p>;
   if (loading) {

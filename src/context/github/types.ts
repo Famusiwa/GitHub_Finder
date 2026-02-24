@@ -28,16 +28,17 @@ export type Repo ={
   forks:string
 }
 
- 
+ export interface State{
+  loading: boolean;
+  error: string | null;
+ }
 
 // Define context shape
-export type State = {
+export interface State {
   users: User[];
   user: User | null;
   repos: Repo[];
-  loading: boolean;
-  error: string | null;
-};
+}
 
 export type Action =
   | { type: "START" }
