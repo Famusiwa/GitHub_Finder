@@ -51,35 +51,18 @@
 
 //UseContext with UseReducer
 
-import { createContext, useReducer, useCallback } from "react";
-import type { ReactNode } from "react";
-import axios, { AxiosError } from "axios";
-// import { initialState, githubReducer } from "./GitHubReducer";
+import { createContext, useReducer } from "react";
 import { githubReducer } from "./GitHubReducer";
-import type { State } from "./types";
+import type { Action, State } from "./types";
 
 // Define context shape
 interface GitHubContextType extends State {
-  searchUsers: (text: string) => Promise<void>;
-  clearUser: () => void;
-  get_User_Repos: (login: string) => Promise<void>;
+  dispatch: React.Dispatch<Action>;
 }
 
-// Create context with initial undefined (to be provided later)
 const GitHubContext = createContext<GitHubContextType | undefined>(undefined);
 
-// Define props for provider
-interface UserProviderProps {
-  children: ReactNode;
-}
-
-const API_URL = import.meta.env.VITE_API_URL;
-
-const github = axios.create({
-  baseURL: API_URL,
-});
-
-export function GitHubProvider({ children }: UserProviderProps) {
+export function GitHubProvider({ children }: { children: React.ReactNode }) {
   const initialState = {
     users: [],
     user: null,
@@ -89,59 +72,8 @@ export function GitHubProvider({ children }: UserProviderProps) {
   };
   const [state, dispatch] = useReducer(githubReducer, initialState);
 
-  //Filter Users
-  const searchUsers = useCallback(async (text: string) => {
-    setLoading();
-    const param = new URLSearchParams({
-      q: text,
-    });
-    try {
-      const response = await github.get(`/search/users?${param}`);
-
-      dispatch({ type: "SUCCESS", payload: response.data.items });
-    } catch (err) {
-      // Check if error is an Axios error
-      if (err instanceof Error) {
-        const error = err as AxiosError<{ message: string }>;
-        // Prefer server's message if available
-        const message = error.response?.data?.message || error.message;
-        dispatch({ type: "ERROR", payload: message });
-      }
-    }
-  }, []);
-
-  const get_User_Repos = useCallback(async (login: string) => {
-    setLoading();
-    const params = new URLSearchParams({
-      sort: "created",
-      per_page: "10",
-    });
-    try {
-      const [user, repos] = await Promise.all([
-        github.get(`/users/${login}`),
-        github.get(`${API_URL}/users/${login}/repos?${params}`),
-      ]);
-      dispatch({ type: "GET_USER", payload: user.data });
-      dispatch({ type: "GET_REPOS", payload: repos.data });
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        // const error = err as AxiosError<{ message: string }>;
-        const message = err.response?.data?.message || err.message;
-        dispatch({ type: "ERROR", payload: message });
-      }
-    }
-  }, []);
-
-  //to clear user
-  const clearUser = () => dispatch({ type: "CLEAR" });
-
-  //Create a function for loading to be resuable
-  const setLoading = () => dispatch({ type: "START" });
-
   return (
-    <GitHubContext.Provider
-      value={{ ...state, searchUsers, clearUser, get_User_Repos }}
-    >
+    <GitHubContext.Provider value={{ ...state, dispatch }}>
       {children}
     </GitHubContext.Provider>
   );

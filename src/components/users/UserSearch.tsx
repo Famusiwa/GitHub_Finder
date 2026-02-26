@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useGitHubContext } from "../../hooks/UseGithubContext";
 import { useAlertContext } from "../../hooks/UseAlertContext";
 import Button from "../layout/Button";
+import { searchUsers } from "../../context/github/GitHubActions";
 
 const UserSearch: React.FC = () => {
   const [text, setText] = useState<string>("");
-  const { users, searchUsers, clearUser } = useGitHubContext();
+  const { users, dispatch } = useGitHubContext();
   const { setAlert } = useAlertContext();
 
   // const handleChange = ({
@@ -23,13 +24,15 @@ const UserSearch: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setText(e.target.value);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (text === "") {
       setAlert("Please type in the search area", "error");
     } else {
-      searchUsers(text);
+      dispatch({ type: "START" });
+      const users = await searchUsers(text);
+      dispatch({ type: "SUCCESS", payload: users });
       setText("");
     }
   };
@@ -55,7 +58,7 @@ const UserSearch: React.FC = () => {
       </div>
       {users.length > 0 && (
         <Button
-          onClick={clearUser}
+          onClick={() => dispatch({ type: "CLEAR" })}
           className="btn btn-error rounded-xl w-20  btn-md"
         >
           Clear

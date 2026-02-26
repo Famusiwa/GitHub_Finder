@@ -3,7 +3,7 @@ import { useAlertContext } from "../../hooks/UseAlertContext";
 const Alert = () => {
   const { alert } = useAlertContext();
   return (
-    alert !== null && (
+    alert.msg !== "" && (
       <div className="flex items-start mb-4 space-x-2">
         {alert.type === "error" && (
           <svg

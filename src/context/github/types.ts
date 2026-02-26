@@ -44,6 +44,5 @@ export type Action =
   | { type: "START" }
   | { type: "SUCCESS"; payload: User[] }
   | { type: "ERROR"; payload: string }
-  | {type: "GET_USER", payload: User}
-  | {type: "GET_REPOS", payload: Repo[]}
+  | {type: "GET_USER_AND_REPOS", payload: {user: User, repos: Repo[]}}
   | {type: "CLEAR"; };

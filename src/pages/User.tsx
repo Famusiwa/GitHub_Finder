@@ -6,21 +6,23 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Spinner from "../components/layout/Spinner";
 import RepoLists from "../components/repos/RepoLists";
+import { get_User_Repos } from "../context/github/GitHubActions";
 
 const User = () => {
-  const { get_User_Repos, user, loading, error, repos } = useGitHubContext();
-  const params = useParams<{ login: string }>();
+  const { dispatch, user, loading, error, repos } = useGitHubContext();
+  const { login } = useParams<{ login: string }>();
 
   useEffect(() => {
-    const getUserData = async () => {
-      if (params.login) {
-        await get_User_Repos(params.login);
-      }
+    if (!login) return;
+    dispatch({ type: "START" });
+    const fetchUserData = async () => {
+      const userRepos = await get_User_Repos(login);
+      dispatch({ type: "GET_USER_AND_REPOS", payload: userRepos });
     };
-    getUserData();
-  }, [params.login, get_User_Repos]);
+    fetchUserData();
+  }, [login, dispatch]);
 
-  if (!user) return <p>Error: {error}</p>;
+  if (!user) return <p>{error}</p>;
   if (loading) {
     return <Spinner />;
   } else {
